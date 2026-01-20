@@ -2,7 +2,7 @@
   <img src="00-image-generation/assets/00_command_center_1024.png" alt="Promptling Command Center" width="400"/>
 </p>
 
-<h1 align="center">Microsoft Foundry: Zero to Hero</h1>
+<h1 align="center">Microsoft Foundry for AI Engineers: Zero to Hero</h1>
 
 <p align="center">
   <strong>Build, Scale, and Govern AI Applications in the Enterprise</strong>
