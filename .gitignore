@@ -1,4 +1,15 @@
+# macOS
+.DS_Store
+
+# Environment variables
 .env
+
+# Python
+__pycache__/
+*.pyc
+*.py[cod]
+
+# Project specific
 hosted-agent-project
 .foundry
 *.pyc
@@ -10,3 +21,4 @@ mcp_test
 team-deployments.json
 16-evaluation/*.json
 .foundry
+.DS_Store
