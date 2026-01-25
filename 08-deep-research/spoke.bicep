@@ -1,14 +1,36 @@
-// Lab 8: Deep Research - Spoke Resources
-// Deploys Azure AI Search for Foundry IQ knowledge bases
-// o3-deep-research model is deployed in Landing Zone (Lab 1a) and accessed via APIM
+// Spoke deployment for Deep Research Lab
+// Deploys:
+// - o3-deep-research model in the Landing Zone hub
+// - Azure AI Search for Foundry IQ knowledge bases
+// - Required RBAC permissions
 
 targetScope = 'resourceGroup'
 
 param location string = resourceGroup().location
 param deployerPrincipalId string
 
+// Landing Zone parameters (from Lab 1a)
+param hubResourceGroup string
+param hubAccountName string
+param apimName string
+
 var suffix = substring(uniqueString(resourceGroup().id), 0, 6)
 var searchName = 'search-dr-${suffix}'
+
+// Reference to existing Landing Zone hub
+resource hubAccount 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' existing = {
+  name: hubAccountName
+  scope: resourceGroup(hubResourceGroup)
+}
+
+// Deploy o3-deep-research model in the hub (via module for cross-RG deployment)
+module deepResearchModel 'deep-research-model.bicep' = {
+  name: 'deploy-deep-research-model'
+  scope: resourceGroup(hubResourceGroup)
+  params: {
+    hubAccountName: hubAccountName
+  }
+}
 
 // Azure AI Search for Foundry IQ
 resource search 'Microsoft.Search/searchServices@2024-06-01-preview' = {
@@ -21,10 +43,6 @@ resource search 'Microsoft.Search/searchServices@2024-06-01-preview' = {
     partitionCount: 1
     replicaCount: 1
     semanticSearch: 'standard'
-    publicNetworkAccess: 'enabled'
-    authOptions: {
-      aadOrApiKey: { aadAuthFailureMode: 'http401WithBearerChallenge' }
-    }
   }
 }
 
@@ -50,5 +68,15 @@ resource deployerSearchServiceContributor 'Microsoft.Authorization/roleAssignmen
   }
 }
 
+// Add Responses API operation to APIM for Deep Research
+module apimResponsesApi 'apim-responses-api.bicep' = {
+  name: 'add-responses-api'
+  scope: resourceGroup(hubResourceGroup)
+  params: {
+    apimName: apimName
+  }
+}
+
 output searchEndpoint string = 'https://${search.name}.search.windows.net'
 output searchName string = search.name
+output deepResearchModel string = deepResearchModel.outputs.modelName
