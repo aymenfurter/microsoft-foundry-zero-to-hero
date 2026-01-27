@@ -3,7 +3,8 @@ targetScope = 'resourceGroup'
 // This Bicep module adds Model Router to an existing Landing Zone
 // Run this AFTER lab-1a-landing-zone to add the model-router deployment
 
-var suffix = substring(uniqueString(resourceGroup().id), 0, 6)
+// Use subscription ID + RG ID for uniqueness across different users/subscriptions
+var suffix = substring(uniqueString(subscription().subscriptionId, resourceGroup().id), 0, 6)
 var aiAccountName = 'foundry-hub-${suffix}'
 var apimName = 'foundry-apim-${suffix}'
 

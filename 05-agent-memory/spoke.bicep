@@ -9,7 +9,8 @@ param embeddingModelName string = 'text-embedding-3-small'
 @secure()
 param apimSubscriptionKey string
 
-var suffix = substring(uniqueString(resourceGroup().id), 0, 6)
+// Use subscription ID + RG ID for uniqueness across different users/subscriptions
+var suffix = substring(uniqueString(subscription().subscriptionId, resourceGroup().id), 0, 6)
 var aiAccountName = 'memory-spoke-${suffix}'
 var projectName = 'memory-project'
 

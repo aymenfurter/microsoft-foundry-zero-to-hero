@@ -72,7 +72,7 @@ def submit_finetune_job(
         f"olive finetune --method lora --model_name_or_path {base_model} --trust_remote_code "
         "--data_name json --data_files /data/train.jsonl "
         "--text_template '<|system|>{system}<|end|><|user|>{user}<|end|><|assistant|>{assistant}<|end|>' "
-        "--max_steps 100 --output_path /output/ft "
+        "--max_steps 300 --learning_rate 2e-4 --output_path /output/ft "
         "--target_modules qkv_proj,o_proj,gate_up_proj,down_proj --log_level 1 && "
         f"az storage blob upload-batch --account-name {storage_account} --auth-mode login --destination {container_name} --source /output/ft --destination-path ft/"
     )

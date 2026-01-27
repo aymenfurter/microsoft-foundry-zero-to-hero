@@ -25,7 +25,8 @@ param apimSubscriptionKey string
 // Parse projects - expects array of objects with modelsJson pre-computed
 var projects = json(projectsJson)
 
-var suffix = substring(uniqueString(resourceGroup().id), 0, 6)
+// Use subscription ID + RG ID for uniqueness across different users/subscriptions
+var suffix = substring(uniqueString(subscription().subscriptionId, resourceGroup().id), 0, 6)
 var aiAccountName = '${teamName}-${suffix}'
 
 // Connection name - must be unique and passed from deployment script

@@ -1,8 +1,8 @@
 @description('Location for all resources')
 param location string = resourceGroup().location
 
-@description('Unique suffix for resource names')
-param uniqueSuffix string = uniqueString(resourceGroup().id)
+@description('Unique suffix for resource names - uses subscription ID for cross-user uniqueness')
+param uniqueSuffix string = uniqueString(subscription().subscriptionId, resourceGroup().id)
 
 @description('Name of the Foundry account to connect to')
 param foundryAccountName string

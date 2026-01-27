@@ -7,7 +7,8 @@ param deployerPrincipalId string
 @allowed(['westus3', 'australiaeast', 'swedencentral'])
 param deepSeekLocation string = 'westus3'
 
-var suffix = substring(uniqueString(resourceGroup().id), 0, 6)
+// Use subscription ID + RG ID for uniqueness across different users/subscriptions
+var suffix = substring(uniqueString(subscription().subscriptionId, resourceGroup().id), 0, 6)
 var aiAccountName = 'foundry-hub-${suffix}'
 var storageName = 'foundryhub${suffix}'
 var apimName = 'foundry-apim-${suffix}'

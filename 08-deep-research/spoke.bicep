@@ -14,7 +14,8 @@ param hubResourceGroup string
 param hubAccountName string
 param apimName string
 
-var suffix = substring(uniqueString(resourceGroup().id), 0, 6)
+// Use subscription ID + RG ID for uniqueness across different users/subscriptions
+var suffix = substring(uniqueString(subscription().subscriptionId, resourceGroup().id), 0, 6)
 var searchName = 'search-dr-${suffix}'
 
 // Reference to existing Landing Zone hub

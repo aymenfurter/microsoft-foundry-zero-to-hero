@@ -1,30 +1,16 @@
 // Lab 7a: Built-in Tools - Spoke Infrastructure
 // Creates an AI Foundry project with LOCAL model deployment for built-in tools
-//
-// ============================================================================
-// IMPORTANT FINDING: Built-in Tools vs APIM Gateway
-// ============================================================================
-// Built-in tools (Code Interpreter, File Search) require NATIVE model deployments.
-// They do NOT work with APIM gateway (BYO model).
-//
-// Error when using APIM gateway with responses.create():
-//   "The following tools are not supported with BYO model: code_interpreter_auto.
-//    Please remove these tools or use a standard model deployment."
-//
-// Error when using azure.ai.agents with APIM gateway connection:
-//   "Failed to resolve model info for: apim-gateway/gpt-4.1-mini"
-// ============================================================================
-
 @description('Principal ID of the deployer for RBAC assignments')
 param deployerPrincipalId string
 
 @description('Local model for built-in tools (Code Interpreter, File Search)')
-param localModelName string = 'gpt-4.1-mini'
+param localModelName string = 'gpt-4o-mini'
 
 @description('Location for resources')
 param location string = resourceGroup().location
 
-var uniqueSuffix = uniqueString(resourceGroup().id)
+// Use subscription ID + RG ID for uniqueness across different users/subscriptions
+var uniqueSuffix = uniqueString(subscription().subscriptionId, resourceGroup().id)
 var accountName = 'ai-builtin-${uniqueSuffix}'
 var projectName = 'builtin-tools-lab'
 
@@ -65,9 +51,9 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-previ
 resource localModel 'Microsoft.CognitiveServices/accounts/deployments@2025-04-01-preview' = {
   parent: aiAccount
   name: localModelName
-  sku: { name: 'GlobalStandard', capacity: 100 }
+  sku: { name: 'GlobalStandard', capacity: 50 }
   properties: {
-    model: { name: localModelName, format: 'OpenAI', version: '2025-04-14' }
+    model: { name: localModelName, format: 'OpenAI', version: '2024-07-18' }
   }
 }
 

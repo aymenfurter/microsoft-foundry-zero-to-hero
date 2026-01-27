@@ -12,7 +12,8 @@ param gatewayModelName string = 'gpt-4.1-mini'
 @secure()
 param apimSubscriptionKey string
 
-var suffix = substring(uniqueString(resourceGroup().id), 0, 6)
+// Use subscription ID + RG ID for uniqueness across different users/subscriptions
+var suffix = substring(uniqueString(subscription().subscriptionId, resourceGroup().id), 0, 6)
 var aiAccountName = 'iq-spoke-${suffix}'
 var projectName = 'iq-project'
 var searchName = 'iq-search-${suffix}'

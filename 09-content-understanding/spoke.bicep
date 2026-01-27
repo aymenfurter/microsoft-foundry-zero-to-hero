@@ -19,7 +19,8 @@ param hubAccountName string = ''
 param apimName string = ''
 param apimSubscriptionKey string = ''
 
-var suffix = substring(uniqueString(resourceGroup().id), 0, 6)
+// Use subscription ID + RG ID for uniqueness across different users/subscriptions
+var suffix = substring(uniqueString(subscription().subscriptionId, resourceGroup().id), 0, 6)
 var aiAccountName = 'foundry-cu-${suffix}'
 var projectName = 'content-understanding-${suffix}'
 
